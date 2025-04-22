@@ -2,18 +2,18 @@ using Microsoft.EntityFrameworkCore;
 
 using TodoApi;
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = Environment.GetEnvironmentVariable("ToDoDB");
-
-Console.WriteLine($"🔍 Connection String: {connectionString}");
-
-builder.Services.AddDbContext<ToDoDbContext>(options =>
-    options.UseMySql("Server=b4msov7vdcfh4rprzufu-mysql.services.clever-cloud.com;User=upnjvpxjxccpf9i2;Password=upnjvpxjxccpf9i2;Database=b4msov7vdcfh4rprzufu", new MySqlServerVersion(new Version(8, 0, 41)),
-    mySqlOptions => mySqlOptions.EnableRetryOnFailure()));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var connectionString = Environment.GetEnvironmentVariable("ToDoDB");
+
+Console.WriteLine($"🔍 Connection String: {connectionString}");
+
+builder.Services.AddDbContext<ToDoDbContext>(options =>
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 41)),
+    mySqlOptions => mySqlOptions.EnableRetryOnFailure()));
 
 builder.Services.AddCors(o => o.AddPolicy("AllowAll", opt =>
     opt.AllowAnyOrigin()
