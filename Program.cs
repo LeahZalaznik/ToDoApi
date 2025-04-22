@@ -32,6 +32,7 @@ app.MapPost("/", async (Item item, ToDoDbContext Db) =>
         IsComplete = item.IsComplete,
         Name = item.Name
     };
+    Console.WriteLine("💙💙",todoItem);
 
     Db.Items.Add(todoItem);
     await Db.SaveChangesAsync();
