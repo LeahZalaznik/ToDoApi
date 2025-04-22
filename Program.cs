@@ -2,13 +2,19 @@ using Microsoft.EntityFrameworkCore;
 
 using TodoApi;
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = Environment.GetEnvironmentVariable("ToDoDB");
+
+Console.WriteLine($"🔍 Connection String: {connectionString}");
+
+builder.Services.AddDbContext<ToDoDbContext>(options =>
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 41)),
+    mySqlOptions => mySqlOptions.EnableRetryOnFailure()));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ToDoDbContext>(opt => opt.UseMySql(builder.Configuration.GetConnectionString("ToDoDB"),
-ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("ToDoDB"))));
+
 builder.Services.AddCors(o => o.AddPolicy("AllowAll", opt =>
     opt.AllowAnyOrigin()
         .AllowAnyMethod()
