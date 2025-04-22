@@ -8,6 +8,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = Environment.GetEnvironmentVariable("ToDoDB");
+using (var connection = new MySqlConnection(connectionString))
+{
+    connection.Open();
+    string version = connection.ServerVersion;
+    Console.WriteLine($"MySQL Server Version: {version}");
+}
 
 Console.WriteLine($"🔍 Connection String: {connectionString}");
 
