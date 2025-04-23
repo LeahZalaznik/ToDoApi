@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = Environment.GetEnvironmentVariable("ToDoDB") ??
 builder.Configuration.GetConnectionString("ToDoDB");
 
-builder.Services.AddDbContext<ToDoDbContext>(opt => opt.MySql(
+builder.Services.AddDbContext<ToDoDbContext>(opt => opt.UseMySql(
     connectionString,ServerVersion.AutoDetect(connectionString)
 ));
 
