@@ -1,19 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Internal;
 using TodoApi;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var connectionString = Environment.GetEnvironmentVariable("ToDoDB") ??
-builder.Configuration.GetConnectionString("ToDoDB");
-
-builder.Services.AddDbContext<ToDoDbContext>(opt => opt.UseMySql(
-    connectionString,ServerVersion.AutoDetect(connectionString)
-));
-
-Console.WriteLine($"🔍 Connection String: {connectionString}");
-
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -25,6 +14,16 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
                    .AllowAnyMethod()
                    .AllowAnyHeader();
         }));
+var connectionString = Environment.GetEnvironmentVariable("ToDoDB") ??
+builder.Configuration.GetConnectionString("ToDoDB");
+
+builder.Services.AddDbContext<ToDoDbContext>(opt => opt.UseMySql(
+    connectionString,ServerVersion.AutoDetect(connectionString)
+));
+
+Console.WriteLine($"🔍 Connection String: {connectionString}");
+
+
 
 var app = builder.Build();
 
