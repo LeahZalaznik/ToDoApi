@@ -5,13 +5,14 @@ using TodoApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("ToDoDB");
+var connectionString = Environment.GetEnvironmentVariable("ToDoDB") ??
+builder.Configuration.GetConnectionString("ToDoDB")
+
+builder.Services.AddDbContext<ToDoDbContext>(opt => opt.MySql(
+    connectionString,ServerVersion.AutoDetect(connectionString)
+))
 
 Console.WriteLine($"🔍 Connection String: {connectionString}");
-
-builder.Services.AddDbContext<ToDoDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 41)),
-    mySqlOptions => mySqlOptions.EnableRetryOnFailure()));
 
 
 builder.Services.AddControllers();
@@ -27,20 +28,20 @@ builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ToDoDbContext>();
-    Console.WriteLine($"🔍 Connection String: {connectionString}");
-    try
-    {
-        dbContext.Database.OpenConnection();
-        Console.WriteLine("✅ הצלחנו להתחבר למסד הנתונים!");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"❌ חיבור למסד הנתונים נכשל: {ex.Message}");
-    }
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var dbContext = scope.ServiceProvider.GetRequiredService<ToDoDbContext>();
+//     Console.WriteLine($"🔍 Connection String: {connectionString}");
+//     try
+//     {
+//         dbContext.Database.OpenConnection();
+//         Console.WriteLine("✅ הצלחנו להתחבר למסד הנתונים!");
+//     }
+//     catch (Exception ex)
+//     {
+//         Console.WriteLine($"❌ חיבור למסד הנתונים נכשל: {ex.Message}");
+//     }
+// }
 
 
 app.UseSwagger();
