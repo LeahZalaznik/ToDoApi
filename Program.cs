@@ -6,11 +6,11 @@ using TodoApi;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = Environment.GetEnvironmentVariable("ToDoDB") ??
-builder.Configuration.GetConnectionString("ToDoDB")
+builder.Configuration.GetConnectionString("ToDoDB");
 
 builder.Services.AddDbContext<ToDoDbContext>(opt => opt.MySql(
     connectionString,ServerVersion.AutoDetect(connectionString)
-))
+));
 
 Console.WriteLine($"🔍 Connection String: {connectionString}");
 
